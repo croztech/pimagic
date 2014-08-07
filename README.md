@@ -1,0 +1,4 @@
+pimagic
+=======
+
+PiMagic repository
