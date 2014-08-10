@@ -7,6 +7,9 @@
 #              - Note that the first version has only one analogue paddle on A0
 # @croz_tech   V1.1  10/08/2014  (Steve Crozier)
 #              - Fixed the window title
+# @croz_tech   V1.2  10/08/2014  (Steve Crozier)
+#              - Added second channel code
+#              - Removed unused methods now the keyboard isn't used
 
 
 import pygame # Provides what we need to make a game
@@ -50,9 +53,12 @@ class PiPong:
 		# Set up pins
 		# A0.. analogue input
 		self.pin0 = self.board.get_pin('a:0:i')
+		self.pin1 = self.board.get_pin('a:1:i')
 		
-		# Discard reads until A0 reads valid
+		# Discard reads until A0/A1 read valid
 		while self.pin0.read() is None:
+			pass
+		while self.pin1.read() is None:
 			pass
 		
 		# Create two bats, a ball and add them to a sprite group
@@ -89,6 +95,8 @@ class PiPong:
 			# Read the analogue paddle(s)
 			self.bat1pos = self.pin0.read()
 			self.player1Bat.moveTo(self.bat1pos)
+			self.bat2pos = self.pin1.read()
+			self.player2Bat.moveTo(self.bat2pos)
 			
 			# Limit the game to 30 frames per second
 			self.clock.tick(30)
@@ -101,24 +109,7 @@ class PiPong:
 				pygame.quit()
 				self.board.exit()
 				sys.exit()
-			
-			if event.type == KEYDOWN:
-				# Find which key was pressed and start moving appropriate bat
-				if event.key == K_s:
-					# Start moving bat
-					self.player1Bat.startMove("down")
-				elif event.key == K_w:
-					self.player1Bat.startMove("up")
-				if event.key == K_DOWN:
-					self.player2Bat.startMove("down")
-				elif event.key == K_UP:
-					self.player2Bat.startMove("up")
-			
-			if event.type == KEYUP:
-				if event.key == K_s or event.key == K_w:
-					self.player1Bat.stopMove()
-				elif event.key == K_DOWN or event.key == K_UP:
-					self.player2Bat.stopMove()
+
 				
 # The class for the background
 class Background:
@@ -182,29 +173,6 @@ class Bat(sprite.Sprite):
 		# Center the rectangle vertically
 		self.rect.centery = displaySize[1] / 2
 		
-		# Set a bunch of direction and moving variables
-		self.moving = False
-		self.direction = "none"
-		self.speed = 13
-		
-	def startMove(self, direction):
-		
-		# Set the moving flag to true
-		self.direction = direction
-		self.moving = True
-		
-	def update(self):
-		
-		if self.moving:
-			# Move the bat up or down if moving
-			if self.direction == "up":
-				self.rect.centery -= self.speed
-			elif self.direction == "down":
-				self.rect.centery += self.speed
-				
-	def stopMove(self):
-
-		self.moving = False
 		
 	def moveTo(self,pos):
 		
