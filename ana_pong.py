@@ -5,6 +5,8 @@
 #    www.linuxuser.co.uk/tutorials/make-a-game-on-raspberry-pi )
 # @croz_tech   V1.0  21/09/2013  (Steve Crozier)
 #              - Note that the first version has only one analogue paddle on A0
+# @croz_tech   V1.1  10/08/2014  (Steve Crozier)
+#              - Fixed the window title
 
 
 import pygame # Provides what we need to make a game
@@ -30,7 +32,7 @@ class PiPong:
 		self.clock = pygame.time.Clock()
 		
 		# Set the window title
-		display.set_caption("Pi Pong")
+		display.set_caption("Analogue Pi Pong using PiMagic")
 		
 		# Create the window
 		self.display = display.set_mode(self.displaySize)
